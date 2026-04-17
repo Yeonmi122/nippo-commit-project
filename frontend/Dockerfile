@@ -4,8 +4,8 @@ FROM node:20-alpine
 WORKDIR /app
 
 # 依存関係インストール
-COPY package*.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm install vite --save-dev
 
 # ソースコピー
 COPY . .

@@ -13,7 +13,9 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     command: npm run dev
+# リンク　http://localhost:5173/
 
   db:
     image: postgres:16
