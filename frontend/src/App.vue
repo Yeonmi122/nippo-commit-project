@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import Calender from './components/Calendar.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <router-view />
 </template>
