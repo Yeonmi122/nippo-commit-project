@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue"
+import ReportModal from "../components/ReportModal.vue"
+import type { ReportDetail } from "../types/report"
 
 // 年月
 const today = new Date()
@@ -10,11 +12,15 @@ const month = ref(today.getMonth() + 1)
 const submittedSet = ref<Set<string>>(new Set())
 
 const fetchStatus = async () => {
-  const res = await fetch("/api/getNippoStatus")
+  const res = await fetch(`/api/getNippoStatus?year=${year.value}&month=${month.value}`)
   const data = await res.json()
 
   submittedSet.value = new Set(
     data.nippoStatus.map((d: any) => d.date)
+  )
+
+  nippoMap.value = new Map(
+    data.nippoStatus.map((d: any) => [d.date, {id: d.id}])
   )
 }
 // 週報ステータスAPI（提出済み日付）
@@ -26,6 +32,10 @@ const fetchShuhoStatus = async () => {
 
   shuhoSet.value = new Set(
     data.shuhoStatus.map((d: any) => d.date)
+  )
+
+  shuhoMap.value = new Map(
+    data.shuhoStatus.map((d: any) => [d.date, {id: d.id}])
   )
 }
 
@@ -123,24 +133,53 @@ const nextMonth = () => {
   }
 }
 
-// モーダル
-const selectedReport = ref<any>(null)
+// モーダル表示
+const selectedReport = ref<ReportDetail | null>(null)
 const showModal = ref(false)
+const cache = new Map<string, ReportDetail>()
+const nippoMap = ref(new Map<string, { id: string }>())
+const shuhoMap = ref(new Map<string, { id: string }>())
 
-const handleClick = (day: number) => {
+const getNippoId = (date: string) => {
+  return nippoMap.value.get(date)?.id
+}
+
+const getShuhoId = (date: string) => {
+  return shuhoMap.value.get(date)?.id
+}
+
+const handleClick = async(day: number) => {
   const date = formatDate(day)
+  const dayOfWeek = getDayOfWeek(date)
 
-  if (!submittedSet.value.has(date)) return
+   // 日曜は何もしない
+  if (dayOfWeek === 0) return
 
-  selectedReport.value = {
-    date,
-    title: "日報タイトル",
-    time: "18:30",
-    sender: "山田太郎",
-    to: "チーム",
-    content: "本日の業務内容..."
+  const type = dayOfWeek === 6 ? "shuho" : "nippo"
+  const id =
+    type === "shuho"
+    ? getShuhoId(date)
+    : getNippoId(date)
+
+  //未提出なら何もしない
+  if (!id) return
+
+  //キャッシュキー作成
+  const key = `${type}-${id}`
+
+  if (cache.has(key)) {
+    selectedReport.value = cache.get(key)!
+    showModal.value = true
+    return
   }
 
+  const res = await fetch(`/api/${type}/${id}`)
+  if (!res.ok) return
+  const data = await res.json()
+
+  //キャッシュ保存
+  cache.set(key, data)
+  selectedReport.value = data
   showModal.value = true
 }
 </script>
@@ -161,7 +200,7 @@ const handleClick = (day: number) => {
     <!-- メイン -->
     <main class="main">
       <div class="header">
-        <h1>日報・週報　提出カレンダー</h1>
+        <h1>日報・週報　提出状況カレンダー</h1>
       </div>
 
       <div class="calendar-header">
@@ -209,22 +248,11 @@ const handleClick = (day: number) => {
     </main>
 
     <!-- モーダル -->
-    <div v-if="showModal" class="overlay">
-      <div class="modal">
-        <button class="close" @click="showModal=false">×</button>
-
-        <h2>日報詳細</h2>
-        <p>{{ selectedReport.date }}</p>
-        <p>件名：{{ selectedReport.title }}</p>
-        <p>送信：{{ selectedReport.time }}</p>
-        <p>送信者：{{ selectedReport.sender }}</p>
-        <p>宛先：{{ selectedReport.to }}</p>
-
-        <div class="content">
-          {{ selectedReport.content }}
-        </div>
-      </div>
-    </div>
+    <ReportModal
+      v-if="showModal"
+      :report="selectedReport"
+      @close="showModal = false"
+    />
   </div>
 </template>
 
