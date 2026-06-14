@@ -47,7 +47,7 @@ public class EmailService {
 
             mailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException("HTMKメール送信に失敗しました:" + e.getMessage());
+            throw new RuntimeException("メール送信に失敗しました:" + e.getMessage());
         }
     }
 }

@@ -20,8 +20,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: yoo.yeonmi@no1s.biz // 自分のメールアドレスを設定
-    password: ${MAIL_PASSWORD} // 自分のアプリパスワードを設定
+    username: yoo.yeonmi@no1s.biz # 自分のメールアドレスを設定
+    password: ${MAIL_PASSWORD} # 自分のアプリパスワードを設定
     properties:
       mail:
         smtp:
