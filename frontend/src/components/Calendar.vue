@@ -12,30 +12,30 @@ const month = ref(today.getMonth() + 1)
 const submittedSet = ref<Set<string>>(new Set())
 
 const fetchStatus = async () => {
-  const res = await fetch(`/api/getNippoStatus?year=${year.value}&month=${month.value}`)
+  const res = await fetch(`/nippo/getNippoStatus?year=${year.value}&month=${month.value}`)
   const data = await res.json()
 
   submittedSet.value = new Set(
-    data.nippoStatus.map((d: any) => d.date)
+    data.status.map((d: any) => d.date)
   )
 
   nippoMap.value = new Map(
-    data.nippoStatus.map((d: any) => [d.date, {id: d.id}])
+    data.status.map((d: any) => [d.date, {id: d.id}])
   )
 }
 // 週報ステータスAPI（提出済み日付）
 const shuhoSet = ref<Set<string>>(new Set())
 
 const fetchShuhoStatus = async () => {
-  const res = await fetch(`/api/getShuhoStatus?year=${year.value}&month=${month.value}`)
+  const res = await fetch(`/shuho/getShuhoStatus?year=${year.value}&month=${month.value}`)
   const data = await res.json()
 
   shuhoSet.value = new Set(
-    data.shuhoStatus.map((d: any) => d.date)
+    data.status.map((d: any) => d.date)
   )
 
   shuhoMap.value = new Map(
-    data.shuhoStatus.map((d: any) => [d.date, {id: d.id}])
+    data.status.map((d: any) => [d.date, {id: d.id}])
   )
 }
 
