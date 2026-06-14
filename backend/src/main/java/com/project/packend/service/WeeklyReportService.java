@@ -7,6 +7,8 @@ import com.project.packend.repository.WeeklyReportRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,13 +18,38 @@ import java.util.List;
 public class WeeklyReportService {
 
     private final WeeklyReportRepository weeklyReportRepository;
+    private final EmailService emailService;
+    private final TemplateEngine templateEngine;
 
     // 週報情報登録
     public WeeklyReport saveReport(WeeklyReport report) {
         if(weeklyReportRepository.existsByReportDate(report.getReportDate())) {
             throw new IllegalArgumentException((report.getReportDate() + "週報は登録されています。"));
         }
-        return weeklyReportRepository.save(report);
+
+        // DBに登録
+        WeeklyReport savedReport = weeklyReportRepository.save(report);
+
+        // メール送信
+        try {
+            String toEmail = savedReport.getSubmitEmail();
+            String ccEmail = savedReport.getCc();
+            String subject = "「週報」" + savedReport.getSubject();
+
+            // HTMLテンプレートに渡すデータをContextに入れる
+            Context context = new Context();
+            context.setVariable("userId", savedReport.getUserId());
+            context.setVariable("reportDate", savedReport.getReportDate().toString());
+            context.setVariable("subject", savedReport.getSubject());
+            context.setVariable("content", savedReport.getContent());
+
+            String htmlContent = templateEngine.process("mail/weekly-report", context);
+
+            emailService.sendHtmlEmail(toEmail, ccEmail, subject, htmlContent);
+        } catch (Exception e) {
+            System.err.println("メール送信失敗：" + e.getMessage());
+        }
+        return savedReport;
     }
 
     // 週報情報取得

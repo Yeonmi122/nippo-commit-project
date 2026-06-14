@@ -3,11 +3,12 @@ package com.project.packend.service;
 import com.project.packend.dto.ReportResponse;
 import com.project.packend.dto.StatusResponse;
 import com.project.packend.entity.DailyReport;
-import com.project.packend.entity.WeeklyReport;
 import com.project.packend.repository.DailyReportRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,13 +18,38 @@ import java.util.List;
 public class DailyReportService {
 
     private final DailyReportRepository dailyReportRepository;
+    private final EmailService emailService;
+    private final TemplateEngine templateEngine;
 
     // 日報登録
     public DailyReport saveReport(DailyReport report) {
         if (dailyReportRepository.existsByReportDate(report.getReportDate())) {
             throw new IllegalArgumentException((report.getReportDate() + "日報は登録されています。"));
         }
-        return dailyReportRepository.save(report);
+
+        // DBに登録
+        DailyReport savedReport = dailyReportRepository.save(report);
+
+        // メール送信
+        try {
+            String toEmail = savedReport.getSubmitEmail();
+            String ccEmail = savedReport.getCc();
+            String subject = "「日報」" + savedReport.getSubject();
+
+            // HTMLテンプレートに渡すデータをContextに入れる
+            Context context = new Context();
+            context.setVariable("userId", savedReport.getUserId());
+            context.setVariable("reportDate", savedReport.getReportDate().toString());
+            context.setVariable("subject", savedReport.getSubject());
+            context.setVariable("content", savedReport.getContent());
+
+            String htmlContent = templateEngine.process("mail/daily-report", context);
+
+            emailService.sendHtmlEmail(toEmail, ccEmail, subject, htmlContent);
+        } catch (Exception e) {
+            System.err.println("メール送信失敗" + e.getMessage());
+        }
+        return savedReport;
     }
 
     // 日報情報取得
