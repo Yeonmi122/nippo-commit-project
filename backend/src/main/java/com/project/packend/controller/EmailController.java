@@ -27,6 +27,6 @@ public class EmailController {
         // Serviceメール送信メソッド呼び出し
         emailService.sendSimpleEmail(to, ccEmail, subject, content);
 
-        return ResponseEntity.ok("メールが成功に送信されました");
+        return ResponseEntity.ok("メール送信が成功しました");
     }
 }
