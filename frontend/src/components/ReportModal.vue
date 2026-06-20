@@ -25,11 +25,11 @@ const stop = (e: Event) => e.stopPropagation()
       <h2>日報詳細</h2>
 
       <div v-if="report">
-        <p><strong>日付：</strong>{{ report.date }}</p>
+        <p><strong>日付：</strong>{{ report.reportDate }}</p>
         <p><strong>件名：</strong>{{ report.title }}</p>
-        <p><strong>送信日時：</strong>{{ report.createdAt }}</p>
-        <p><strong>送信者：</strong>{{ report.sender }}</p>
-        <p><strong>宛先：</strong>{{ report.to }}</p>
+        <p><strong>送信日時：</strong>{{ report.createAt }}</p>
+        <p><strong>送信者：</strong>{{ report.myAddress }}</p>
+        <p><strong>宛先：</strong>{{ report.submitAddress }}</p>
 
         <div class="content">
           {{ report.content }}

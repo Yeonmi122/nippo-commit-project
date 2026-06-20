@@ -5,10 +5,10 @@ export interface ReportStatus {
   
   export interface ReportDetail {
     id: string
-    date: string
+    reportDate: string
     title: string
     content: string
-    sender: string
-    to: string
-    createdAt: string
+    myAddress: string
+    submitAddress: string
+    createAt: string
   }

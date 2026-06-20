@@ -173,7 +173,7 @@ const handleClick = async(day: number) => {
     return
   }
 
-  const res = await fetch(`/api/${type}/${id}`)
+  const res = await fetch(`/${type}/${id}`)
   if (!res.ok) return
   const data = await res.json()
 
