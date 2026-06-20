@@ -46,6 +46,37 @@ const router = useRouter()
 const goCalendar = () => {
   router.push("/")
 }
+// メール送信
+const submitReport = async () => {
+  try {
+    const payload =
+      mode.value === "daily"
+        ? {
+            type: "daily",
+            ...daily
+          }
+        : {
+            type: "weekly",
+            ...weekly
+          }
+    const response = await fetch("/send", {
+      method: "POST",
+      headers: {
+
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+    if (!response.ok) {
+      throw new Error("メール送信に失敗しました")
+    }
+    alert("メール送信が完了しました")
+  } catch (error) {
+    console.error(error)
+    alert("メール送信中にエラーが発生しました")
+  }
+
+}
 </script>
 
 <template>
@@ -145,7 +176,7 @@ const goCalendar = () => {
       </div>
 
       <!-- ボタン -->
-      <div class="actions">
+      <div class="actions" @click="submitReport">
         <button class="submit">提出 & Gmail送信</button>
       </div>
     </div>
