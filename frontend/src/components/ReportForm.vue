@@ -75,58 +75,70 @@ const submitReport = async () => {
   }
 
   try {
-    let payload
-    
+    let url = ""
+    let payload = {}
+
     if (mode.value === "daily") {
       // 日報の場合
-      const { start, end, working, record, good, improve, other, ...baseDaily } = daily
-      
+      url = "/api/daily-reports"
+
+      const stringifiedContent = JSON.stringify({
+        start: daily.start,
+        end: daily.end,
+        working: daily.working,
+        record: daily.record, // 実施記録
+        good: daily.good, // うまくいったこと
+        improve: daily.improve, // 改善したいこと
+        other: daily.other // その他
+      })
+
       payload = {
-        type: "daily",
-        ...baseDaily,       // date, subject, to, cc
-        content: {
-          start: start,
-          end: end,
-          working: working,
-          record: record,   // 実施記録
-          good: good,       // うまくいったこと
-          improve: improve, // 改善したいこと
-          other: other      // その他
-        }
+        userId: "yoo.yeonmi@no1s.biz",　// 自分のメールアドレスを設定
+        reportDate: daily.date,
+        subject: daily.subject,
+        submitEmail: daily.to,
+        cc: daily.cc,
+        content: stringifiedContent
       }
     } else {
-      // 週報の場合：指定の項目を content の中にまとめる
-      const { record, goal, content, days, ...baseWeekly } = weekly
-      
+      // 週報の場合
+      url = "/api/weekly-reports"
+
+      const stringifiedContent = JSON.stringify({
+        record: weekly.record, // 実施記録
+        goal: weekly.goal, // 目標
+        content: weekly.content, // 内容記載
+        days: weekly.days // 稼働時間
+      })
+
       payload = {
-        type: "weekly",
-        ...baseWeekly,      // date, subject, to, cc
-        content: {          // "content" でまとめます
-          record: record,   // 実施記録
-          goal: goal,       // 目標
-          content: content, // 内容記載
-          days: days        // 稼働時間
-        }
+        userId: "yoo.yeonmi@no1s.biz", // 自分のメールアドレスを設定
+        reportDate: weekly.date,
+        subject: weekly.subject,
+        submitEmail: weekly.to,
+        cc: weekly.cc,
+        content: stringifiedContent
       }
     }
 
-    const response = await fetch("/send", {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
-
         "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
     })
+
     if (!response.ok) {
       throw new Error("メール送信に失敗しました")
     }
-    alert("メール送信が完了しました")
+
+    const modeName = mode.value === "daily" ? "日報" : "週報"
+    alert(`${modeName}の送信が完了しました! 🚀`)
   } catch (error) {
     console.error(error)
     alert("メール送信中にエラーが発生しました")
   }
-
 }
 </script>
 
