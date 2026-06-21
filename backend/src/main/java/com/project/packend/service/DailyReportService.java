@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,7 @@ public class DailyReportService {
     private final DailyReportRepository dailyReportRepository;
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
+    private final ObjectMapper objectMapper;
 
     // 日報登録
     public DailyReport saveReport(DailyReport report) {
@@ -32,6 +34,7 @@ public class DailyReportService {
 
         // メール送信
         try {
+            String fromEmail = savedReport.getUserId();
             String toEmail = savedReport.getSubmitEmail();
             String ccEmail = savedReport.getCc();
             String subject = "「日報」" + savedReport.getSubject();
@@ -41,11 +44,13 @@ public class DailyReportService {
             context.setVariable("userId", savedReport.getUserId());
             context.setVariable("reportDate", savedReport.getReportDate().toString());
             context.setVariable("subject", savedReport.getSubject());
-            context.setVariable("content", savedReport.getContent());
+
+            Object contentMap = objectMapper.readValue(savedReport.getContent(), Object.class);
+            context.setVariable("contentObj", contentMap);
 
             String htmlContent = templateEngine.process("mail/daily-report", context);
 
-            emailService.sendHtmlEmail(toEmail, ccEmail, subject, htmlContent);
+            emailService.sendHtmlEmail(fromEmail, toEmail, ccEmail, subject, htmlContent);
         } catch (Exception e) {
             System.err.println("メール送信失敗" + e.getMessage());
         }

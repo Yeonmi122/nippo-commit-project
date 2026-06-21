@@ -4,7 +4,6 @@ import com.project.packend.dto.ApiResponse;
 import com.project.packend.dto.ReportResponse;
 import com.project.packend.dto.StatusResponse;
 import com.project.packend.entity.DailyReport;
-import com.project.packend.entity.WeeklyReport;
 import com.project.packend.service.DailyReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5174")
 public class DailyReportController {
 
     private final DailyReportService dailyReportService;

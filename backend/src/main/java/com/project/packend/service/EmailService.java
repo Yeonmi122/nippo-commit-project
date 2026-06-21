@@ -12,21 +12,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendSimpleEmail(String toEmail, String ccEmail, String subject, String content) {
-        // メールメッセージオブジェクト生成
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        // メール情報
-        message.setTo(toEmail);
-        message.setSubject(subject);
-        message.setText(content);
-        message.setFrom("yoo.yeonmi@no1s.biz");
-
-        // メール送信
-        mailSender.send(message);
-    }
-
-    public void sendHtmlEmail(String toEmail, String ccEmail, String subject, String htmlContent) {
+    public void sendHtmlEmail(String fromEmail, String toEmail, String ccEmail, String subject, String htmlContent) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
 
@@ -43,7 +29,7 @@ public class EmailService {
             helper.setSubject((subject));
 
             helper.setText(htmlContent, true);
-            helper.setFrom("yoo.yeonmi@no1s.biz");
+            helper.setFrom(fromEmail);
 
             mailSender.send(message);
         } catch (Exception e) {

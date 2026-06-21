@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5174")
 public class WeeklyReportController {
 
     private final WeeklyReportService weeklyReportService;
