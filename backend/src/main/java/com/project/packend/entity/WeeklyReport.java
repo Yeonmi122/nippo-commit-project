@@ -20,7 +20,7 @@ public class WeeklyReport {
     private Long id;
 
     @JsonProperty("userId")
-    @Column(name = "user_id", length = 20, nullable = false)
+    @Column(name = "user_id", length = 255, nullable = false)
     private String userId;
 
     @JsonProperty("reportDate")
