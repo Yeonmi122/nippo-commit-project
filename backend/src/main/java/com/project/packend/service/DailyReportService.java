@@ -37,7 +37,7 @@ public class DailyReportService {
             String fromEmail = savedReport.getUserId();
             String toEmail = savedReport.getSubmitEmail();
             String ccEmail = savedReport.getCc();
-            String subject = "「日報」" + savedReport.getSubject();
+            String subject = "日報_" + savedReport.getSubject();
 
             // HTMLテンプレートに渡すデータをContextに入れる
             Context context = new Context();

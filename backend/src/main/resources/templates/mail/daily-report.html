@@ -3,13 +3,11 @@
 <head><meta charset="UTF-8"></head>
 <body>
 
-<h>日報を送ります</h>
+<p>お疲れ様です。</p>
+<p th:text="|${reportDate}の日報を提出致します。|">日時</p>
+<p>よろしくお願いします。</p>
 
 <table>
-    <tr>
-        <th>対象日付</th>
-        <td th:text="${reportDate}">日時</td>
-    </tr>
     <tr>
         <th>稼働時間</th>
         <td>
@@ -20,17 +18,16 @@
     </tr>
 </table>
 
-<h3>📝 1. 実施記録</h3>
-<div th:text="${contentObj.record}"></div>
+<h3>＜実施記録＞</h3>
+<div th:text="${contentObj.record}" style="white-space: pre-wrap;"></div>
 
-<h3>✨ 2. うまくいったこと</h3>
-<div th:text="${contentObj.good}"></div>
+<h3>＜うまくいったこと＞</h3>
+<div th:text="${contentObj.good}" style="white-space: pre-wrap;"></div>
 
-<h3>🔥 3. 改善したいこと</h3>
-<div th:text="${contentObj.improve}"></div>
+<h3>＜改善したいこと＞</h3>
+<div th:text="${contentObj.improve}" style="white-space: pre-wrap;"></div>
 
-<h3>💡 4. その他</h3>
-<div th:text="${contentObj.other}"></div>
-
+<h3>＜その他＞</h3>
+<div th:text="${contentObj.other}" style="white-space: pre-wrap;"></div>
 </body>
 </html>
