@@ -1,39 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>週報</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px;">
+<head><meta charset="UTF-8"></head>
+<body>
 
-<h2 style="color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;">
-    📢 週報が成功に登録されました
-</h2>
-<p>こんにちは, システム自動アラームです。提出された週報の詳細情報は以下の通りです。</p>
+<h>週報を送ります</h>
 
-<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <tr style="background-color: #f8f9fa;">
-        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; width: 20%;">提出者ID</th>
-        <td style="border: 1px solid #dee2e6; padding: 12px;" th:text="${userId}">IDが表示されます</td>
+<table>
+    <tr>
+        <th>対象日付</th>
+        <td th:text="${reportDate}">日時</td>
     </tr>
     <tr>
-        <th style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 12px; text-align: left;">対象日付</th>
-        <td style="border: 1px solid #dee2e6; padding: 12px;" th:text="${reportDate}">日付が表示されます</td>
-    </tr>
-    <tr style="background-color: #f8f9fa;">
-        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left;">タイトル</th>
-        <td style="border: 1px solid #dee2e6; padding: 12px; font-weight: bold;" th:text="${subject}">タイトルが表示されます</td>
+        <th>稼働時間記録</th>
+        <td>
+            <span th:text="${contentObj.days}"></span>
+        </td>
     </tr>
 </table>
 
-<h3 style="margin-top: 30px; color: #2980b9;">📝 報告内容</h3>
-<div style="background-color: #fdfefe; border: 1px solid #e1e8ed; padding: 15px; border-radius: 5px; white-space: pre-wrap;"
-     th:text="${content}">
-</div>
+<h3>📝実施記録</h3>
+<div th:text="${contentObj.record}"></div>
 
-<p style="margin-top: 40px; font-size: 12px; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 10px;">
-    本メールはシステムにより自動発送されました。
-</p>
+<h3>✨目標</h3>
+<div th:text="${contentObj.goal}"></div>
+
+<h3>💫振り返り</h3>
+<div th:text="${contentObj.content}"></div>
 
 </body>
 </html>

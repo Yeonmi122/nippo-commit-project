@@ -1,5 +1,6 @@
 package com.project.packend.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,21 +18,27 @@ public class DailyReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("userId")
     @Column(name = "user_id", length = 20, nullable = false)
     private String userId;
 
+    @JsonProperty("reportDate")
     @Column(name = "report_date", nullable = false)
     private LocalDate reportDate; // DATE 타입 매핑
 
+    @JsonProperty("subject")
     @Column(length = 255, nullable = false)
     private String subject;
 
+    @JsonProperty("submitEmail")
     @Column(name = "submit_email", length = 255, nullable = false)
     private String submitEmail;
 
+    @JsonProperty("cc")
     @Column(length = 255, nullable = false)
     private String cc;
 
+    @JsonProperty("content")
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
